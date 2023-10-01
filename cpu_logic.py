@@ -48,18 +48,17 @@ def cpu_move(player):
         if move == (1, 1):
             insert_piece(board.main_board, move, player['cpu'])
             return move
-        
-    #Corner Cells Availability Test
-    # final_selection = [move for move in best_moves if move in ((0, 0), (0, 2), (2, 0), (2, 2))]
-    # if len(final_selection) != 0:
-    #     print("Corner Chosen")
-    #     move = random.choice(final_selection)
-    #     insert_piece(board.main_board, move, player['cpu'])
-    #     return move
-    
-    final_move = random.choice(best_moves)
-    insert_piece(board.main_board, final_move, player['cpu'])
-    return final_move
+
+    if board.main_board[1][1] == player['cpu']:
+        high_priority = [item for item in best_moves if item  not in ((0, 0), (0, 2), (2, 0), (2, 2))]
+        final_move = random.choice(high_priority)
+        insert_piece(board.main_board, final_move, player['cpu'])
+        return final_move
+    else:
+        high_priority = [item for item in best_moves if item in ((0, 0), (0, 2), (2, 0), (2, 2))]
+        final_move = random.choice(high_priority)
+        insert_piece(board.main_board, final_move, player['cpu'])
+        return final_move
 
 def minimax(board, depth, is_maximizer, player):
     win, winner = check_win(board)

@@ -67,9 +67,9 @@ def play():
             move = cpu_move(player)
             for key, val in indexes.items():
                 if move == val:
-                    cell = key
+                    cell_number = key
 
-            print("Opponent Played: ", cell)
+            print("Opponent Played: ", cell_number)
             turn = not turn
 
         if check_win(board.main_board)[0]:
