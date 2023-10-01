@@ -2,13 +2,14 @@ import board
 from board import *
 from cpu_logic import cpu_move
 
-human = None
-cpu = None
 turn = True
+player = {
+    'human': None,
+    'cpu': None
+}
 
 def choose_piece():
-    global human, cpu
-    while not human:
+    while not player['human']:
         piece = input("Choose O or X: ").upper()
         if piece not in ('O', 'X'):
             if piece == '-1':
@@ -17,9 +18,9 @@ def choose_piece():
                 
             print("Invalid Choice!!")
         else:
-            human = piece
+            player['human'] = piece
     
-    cpu = 'O' if human == 'X' else 'X'
+    player['cpu'] = 'O' if player['human'] == 'X' else 'X'
     return True
 
 def player_input():
@@ -29,7 +30,7 @@ def player_input():
             if 0 < int(cell) <= 9:
                 index = indexes[int(cell)]
                 if valid_move(board.main_board, index):
-                    insert_piece(board.main_board, index, human)
+                    insert_piece(board.main_board, index, player['human'])
                 else:
                     print("Invalid Move!! Please Choose Again")
                     continue
@@ -44,7 +45,7 @@ def player_input():
             if not cell:
                 moves = possible_moves(board.main_board)
                 if len(moves) == 1:
-                    insert_piece(board.main_board, moves.pop(), human)
+                    insert_piece(board.main_board, moves.pop(), player['human'])
                     return True
                 else:
                     print("Invalid Input!! Please Re-Enter!!")
@@ -53,7 +54,7 @@ def player_input():
             continue
 
 def play():
-    global turn, human, cpu
+    global turn
 
     running = choose_piece()
     indexed_board(board.main_board) if running else None
@@ -63,7 +64,7 @@ def play():
             running = player_input()
             turn = not turn
         else:
-            cpu_move(cpu)
+            cpu_move(player)
             turn = not turn
 
         if check_win(board.main_board)[0]:
@@ -79,5 +80,5 @@ def play():
         print_board(board.main_board) if running else None
 
     turn = True
-    human = None
-    cpu = None
+    player['human'] = None
+    player['cpu'] = None
