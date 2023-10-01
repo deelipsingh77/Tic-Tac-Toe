@@ -64,12 +64,22 @@ def play():
             running = player_input()
             turn = not turn
         else:
-            cpu_move(player)
+            move = cpu_move(player)
+            for key, val in indexes.items():
+                if move == val:
+                    cell = key
+
+            print("Opponent Played: ", cell)
             turn = not turn
 
         if check_win(board.main_board)[0]:
             print_board(board.main_board)
-            print(f"Winner: {check_win(board.main_board)[1]}")
+            winner = check_win(board.main_board)[1]
+            print(f"Winner: {winner}")
+            if player['human'] == winner:
+                print("Congratulations!! YOU WON.")
+            else:
+                print("OOPS!! YOU LOST.")
             running = False
 
         if check_draw(board.main_board):
