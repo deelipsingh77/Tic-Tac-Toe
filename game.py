@@ -1,11 +1,6 @@
 import board
 from board import *
 
-piece_value = {
-    'O': True,
-    'X': False
-}
-
 human = None
 cpu = None
 turn = True

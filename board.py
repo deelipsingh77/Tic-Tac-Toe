@@ -16,8 +16,8 @@ indexes = {
     9: (2, 2)
 }
 
-def insert_piece(board, index, human):
-    board[index[0]][index[1]] = human
+def insert_piece(board, index, player):
+    board[index[0]][index[1]] = player
 
 def reset_board(board):
     for i in range(3):
@@ -70,4 +70,9 @@ def check_win(board):
     return False, None
 
 def possible_moves(board):
-    pass
+    moves = []
+    for i, row in enumerate(board):
+        for j, item in enumerate(row):
+            if not item:
+                moves.append((i, j))
+    return moves
