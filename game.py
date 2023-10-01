@@ -1,5 +1,6 @@
 import board
 from board import *
+from cpu_logic import cpu_move
 
 human = None
 cpu = None
@@ -19,7 +20,7 @@ def choose_piece():
 def player_input():
     while True:
         # Testing
-        global human, cpu
+        # global human, cpu
         cell = input("Enter the cell: ")
         if cell.isnumeric():
             if 0 < int(cell) <= 9:
@@ -30,7 +31,7 @@ def player_input():
                     print("Invalid Move!! Please Choose Again")
                     continue
                 # Testing
-                human, cpu = cpu, human
+                # human, cpu = cpu, human
                 return True
             else:
                 print("Invalid Input!! Please Re-Enter!!")
@@ -44,8 +45,8 @@ def player_input():
 
 def play():
     global turn
-    indexed_board(board.main_board)
     choose_piece()
+    indexed_board(board.main_board)
 
     running = True
     while running:
@@ -53,7 +54,8 @@ def play():
             running = player_input()
             turn = not turn
         else:
-            running = player_input()
+            # running = player_input()
+            cpu_move(cpu)
             turn = not turn
 
         if check_win(board.main_board)[0]:

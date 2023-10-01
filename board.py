@@ -55,6 +55,9 @@ def valid_move(board, index):
 def check_draw(board):
     return all(all(item for item in row) for row in board)
 
+def empty_cell(board, index):
+    board[index[0]][index[1]] = ''
+
 def check_win(board):
     left_diagonal = []
     right_diagonal = []
