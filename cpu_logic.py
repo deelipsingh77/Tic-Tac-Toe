@@ -50,11 +50,12 @@ def cpu_move(player):
             return move
         
     #Corner Cells Availability Test
-    final_selection = [move for move in best_moves if move in ((0, 0), (0, 2), (2, 0), (2, 2))]
-    if len(final_selection) != 0:
-        move = random.choice(final_selection)
-        insert_piece(board.main_board, move, player['cpu'])
-        return move
+    # final_selection = [move for move in best_moves if move in ((0, 0), (0, 2), (2, 0), (2, 2))]
+    # if len(final_selection) != 0:
+    #     print("Corner Chosen")
+    #     move = random.choice(final_selection)
+    #     insert_piece(board.main_board, move, player['cpu'])
+    #     return move
     
     final_move = random.choice(best_moves)
     insert_piece(board.main_board, final_move, player['cpu'])
