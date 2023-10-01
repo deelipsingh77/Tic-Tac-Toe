@@ -53,7 +53,7 @@ def player_input():
             continue
 
 def play():
-    global turn
+    global turn, human, cpu
 
     running = choose_piece()
     indexed_board(board.main_board) if running else None
@@ -70,13 +70,14 @@ def play():
             print_board(board.main_board)
             print(f"Winner: {check_win(board.main_board)[1]}")
             running = False
-            continue
 
         if check_draw(board.main_board):
             print_board(board.main_board)
             print(f"It's a Tie")
             running = False
-            continue
 
         print_board(board.main_board) if running else None
-        
+
+    turn = True
+    human = None
+    cpu = None
