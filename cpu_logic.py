@@ -37,15 +37,11 @@ def cpu_move(player):
         else:
             empty_cell(board.main_board, move)
 
-    #Blocking Opponent Win
-    for predict_move in best_moves:
-        insert_piece(board.main_board, predict_move, player['human'])
-        if check_win(board.main_board)[0] and check_win(board.main_board)[1] == player['human']:
-            empty_cell(board.main_board, predict_move)
-            insert_piece(board.main_board, predict_move, player['cpu'])
-            return predict_move
-        else:
-            empty_cell(board.main_board, predict_move)
+    # Check Blocking
+    block, index = check_blocks(board.main_board, player)
+    if block:
+        insert_piece(board.main_board, index, player['cpu'])
+        return index
 
     #Center Cell Availability Test
     for move in best_moves:
