@@ -1,5 +1,6 @@
 import board
 import math
+import random
 from board import *
 
 scores = {
@@ -15,22 +16,58 @@ def set_score(player):
 def cpu_move(player):
     set_score(player)
     best_score = -math.inf
-    best_move = None
+    best_moves = []
     for move in possible_moves(board.main_board):
         insert_piece(board.main_board, move, player['cpu'])
-        score = minimax(board.main_board, 0, True, player)
+        score = minimax(board.main_board, True, player)
         empty_cell(board.main_board, move)
         if score > best_score:
+            best_moves.clear()
+            best_moves.append(move)
             best_score = score
-            best_move = move
         elif score == best_score:
-            current_depth = get_depth(board.main_board, move, player)
-            best_depth = get_depth(board.main_board, best_move, player)
-            if current_depth < best_depth:
-                best_move = move
-    insert_piece(board.main_board, best_move, player['cpu'])
+            best_moves.append(move)
 
-def minimax(board, depth, is_maximizer, player):
+    print("Best Moves", best_moves) ###
+    #Heuristic
+
+    #Choosing Winning Move
+    for move in best_moves:
+        insert_piece(board.main_board, move, player['cpu'])
+        if check_win(board.main_board)[0] and check_win(board.main_board)[1] == player['cpu']:
+            print("Winning Move") ###
+            return
+        else:
+            empty_cell(board.main_board, move)
+
+    #Blocking Opponent Win
+    for predict_move in best_moves:
+        insert_piece(board.main_board, predict_move, player['human'])
+        if check_win(board.main_board)[0] and check_win(board.main_board)[1] == player['human']:
+            print("Blocked") ###
+            empty_cell(board.main_board, predict_move)
+            insert_piece(board.main_board, predict_move, player['cpu'])
+            return
+        else:
+            empty_cell(board.main_board, predict_move)
+
+    #Center Cell Availability Test
+    for predict_move in best_moves:
+        if predict_move == (1, 1):
+            print("Center Cell Captured") ###
+            insert_piece(board.main_board, predict_move, player['cpu'])
+            return
+        
+    #Corner Cells Availability Test
+    final_selection = [move for move in best_moves if move in ((0, 0), (0, 2), (2, 0), (2, 2))]
+    if len(final_selection) != 0:
+        print("Final Selection: ", final_selection) ###
+        insert_piece(board.main_board, random.choice(final_selection), player['cpu'])
+        return
+    
+    insert_piece(board.main_board, random.choice(best_moves), player['cpu'])    
+
+def minimax(board, is_maximizer, player):
     win, winner = check_win(board)
     is_draw = check_draw(board)
     if win:
@@ -42,7 +79,7 @@ def minimax(board, depth, is_maximizer, player):
         best_score = -math.inf
         for move in possible_moves(board):
             insert_piece(board, move, player['human'])
-            score = minimax(board, depth+1, False, player)
+            score = minimax(board, False, player)
             empty_cell(board, move)
             best_score = max(score, best_score)
         return best_score
@@ -50,13 +87,13 @@ def minimax(board, depth, is_maximizer, player):
         best_score = math.inf
         for move in possible_moves(board):
             insert_piece(board, move, player['cpu'])
-            score = minimax(board, depth+1, True, player)
+            score = minimax(board, True, player)
             empty_cell(board, move)
             best_score = min(score, best_score)
         return best_score
     
-def get_depth(board, move, player):
-    insert_piece(board, move, player['cpu'])
-    depth = minimax(board, 0, True, player)
-    empty_cell(board, move)
-    return depth
+# def get_depth(board, move, player):
+#     insert_piece(board, move, player['cpu'])
+#     depth = minimax(board, 0, True, player)
+#     empty_cell(board, move)
+#     return depth
