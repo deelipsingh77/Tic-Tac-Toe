@@ -1,6 +1,5 @@
-import board
 import math
-from board import *
+import random
 
 scores = {
     'X': None,
@@ -9,46 +8,43 @@ scores = {
 }
 
 def set_score(player):
-    scores[player['cpu']] = 1
-    scores[player['human']] = -1
+    scores.update({
+        player['cpu']: 1,
+        player['human']: -1
+    })
 
-def cpu_move(player):
+def cpu_move(board, player):
     set_score(player)
     best_score = -math.inf
-    best_move = None
-    for move in possible_moves(board.main_board):
-        insert_piece(board.main_board, move, player['cpu'])
-        score = minimax(board.main_board, 0, False, player)
-        empty_cell(board.main_board, move)
+    best_move = []
+    for move in board.possible_moves():
+        board.insert_piece(move, player['cpu'])
+        score = minimax(board, 0, False, player)
+        board.empty_cell(move)
         if score > best_score:
             best_score = score
-            best_move = move
-    insert_piece(board.main_board, best_move, player['cpu'])
-    return best_move
+            best_move.clear()
+            best_move.append(move)
+        elif score == best_score:
+            best_move.append(move)
+    choice = random.choice(best_move)
+    board.insert_piece(choice, player['cpu'])
+    return choice
 
 def minimax(board, depth, is_maximizer, player):
-    win, winner = check_win(board)
-    is_draw = check_draw(board)
+    win, winner = board.check_win()
+    is_draw = board.check_draw()
     if win and winner == player['cpu']:
-        return scores[winner]*(len(possible_moves(board))+1)
+        return scores[player['cpu']] * (len(board.possible_moves())+1)
     elif win and winner == player['human']:
-        return scores[winner]*(len(possible_moves(board))+1)
+        return scores[player['human']] * (len(board.possible_moves())+1)
     elif is_draw:
-        return scores['tie']
+        return scores.get('tie')
     
-    if is_maximizer:
-        best_score = -math.inf
-        for move in possible_moves(board):
-            insert_piece(board, move, player['cpu'])
-            score = minimax(board, depth+1, False, player)
-            empty_cell(board, move)
-            best_score = max(score, best_score)
-        return best_score
-    else:
-        best_score = math.inf
-        for move in possible_moves(board):
-            insert_piece(board, move, player['human'])
-            score = minimax(board, depth+1, True, player)
-            empty_cell(board, move)
-            best_score = min(score, best_score)
-        return best_score
+    best_score = -math.inf if is_maximizer else math.inf
+    for move in board.possible_moves():
+        board.insert_piece(move, player['cpu'] if is_maximizer else player['human'])
+        score = minimax(board, depth+1, False if is_maximizer else True, player)
+        board.empty_cell(move)
+        best_score = max(score, best_score) if is_maximizer else min(score, best_score)
+    return best_score

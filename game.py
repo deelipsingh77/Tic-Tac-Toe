@@ -1,11 +1,10 @@
-import board
-from board import *
+from board import TicTacToeBoard
 from cpu_logic import cpu_move
 
-turn = True
 player = {
     'human': None,
-    'cpu': None
+    'cpu': None,
+    'turn': True
 }
 
 def choose_piece():
@@ -23,18 +22,17 @@ def choose_piece():
     player['cpu'] = 'O' if player['human'] == 'X' else 'X'
     return True
 
-def player_input():
+def player_input(board):
     while True:
         cell = input("Enter the cell: ")
         if cell.isnumeric():
             if 0 < int(cell) <= 9:
-                index = indexes[int(cell)]
-                if valid_move(board.main_board, index):
-                    insert_piece(board.main_board, index, player['human'])
+                if board.valid_move(int(cell)):
+                    board.insert_piece(int(cell), player['human'])
+                    return True
                 else:
                     print("Invalid Move!! Please Choose Again")
                     continue
-                return True
             else:
                 print("Invalid Input!! Please Re-Enter!!")
                 continue
@@ -43,9 +41,9 @@ def player_input():
             return False
         else:
             if not cell:
-                moves = possible_moves(board.main_board)
+                moves = board.possible_moves()
                 if len(moves) == 1:
-                    insert_piece(board.main_board, moves.pop(), player['human'])
+                    board.insert_piece(moves.pop(), player['human'])
                     return True
                 else:
                     print("Invalid Input!! Please Re-Enter!!")
@@ -54,27 +52,24 @@ def player_input():
             continue
 
 def play():
-    global turn
-
     running = choose_piece()
-    indexed_board(board.main_board) if running else None
+    board = TicTacToeBoard()
+    
+    if running:
+        board.indexed_board()
 
     while running:
-        if turn:
-            running = player_input()
-            turn = not turn
+        if player['turn']:
+            running = player_input(board)
+            player['turn'] = not player['turn']
         else:
-            move = cpu_move(player)
-            for key, val in indexes.items():
-                if move == val:
-                    cell_number = key
+            move = cpu_move(board, player)
+            print("Opponent Played: ", move)
+            player['turn'] = not player['turn']
 
-            print("Opponent Played: ", cell_number)
-            turn = not turn
-
-        if check_win(board.main_board)[0]:
-            print_board(board.main_board)
-            winner = check_win(board.main_board)[1]
+        if board.check_win()[0]:
+            board.print_board()
+            winner = board.check_win()[1]
             print(f"Winner: {winner}")
             if player['human'] == winner:
                 print("Congratulations!! YOU WON.")
@@ -82,13 +77,16 @@ def play():
                 print("OOPS!! YOU LOST.")
             running = False
 
-        if check_draw(board.main_board):
-            print_board(board.main_board)
+        if board.check_draw():
+            board.print_board()
             print(f"It's a Tie")
             running = False
 
-        print_board(board.main_board) if running else None
+        if running:
+            board.print_board()
 
-    turn = True
-    player['human'] = None
-    player['cpu'] = None
+    player.update({
+        'human': None,
+        'cpu': None,
+        'turn': True
+    })
