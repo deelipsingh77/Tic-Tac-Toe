@@ -1,16 +1,16 @@
 class TicTacToeBoard:
-    indexes =  {
-            1: (0, 0),
-            2: (0, 1),
-            3: (0, 2),
-            4: (1, 0),
-            5: (1, 1),
-            6: (1, 2),
-            7: (2, 0),
-            8: (2, 1),
-            9: (2, 2)
-        }
-    
+    indexes = {
+        1: (0, 0),
+        2: (0, 1),
+        3: (0, 2),
+        4: (1, 0),
+        5: (1, 1),
+        6: (1, 2),
+        7: (2, 0),
+        8: (2, 1),
+        9: (2, 2)
+    }
+
     def __init__(self):
         self.board = [
             ['', '', ''],
@@ -35,7 +35,7 @@ class TicTacToeBoard:
                 number += 1
         self.print_board()
         self.reset_board()
-    
+
     def print_board(self):
         for i, row in enumerate(self.board):
             for j, item in enumerate(row):
@@ -43,9 +43,9 @@ class TicTacToeBoard:
                     item = ' '
 
                 if j < 2:
-                    print("",item,"|", end="")
+                    print("", item, "|", end="")
                 else:
-                    print("",item, end="\n")
+                    print("", item, end="\n")
             if i < 2:
                 print("---|---|---")
 
@@ -68,7 +68,7 @@ class TicTacToeBoard:
         right_diagonal = []
         for i in range(3):
             left_diagonal.append(self.board[i][i])
-            right_diagonal.append(self.board[i][2-i])
+            right_diagonal.append(self.board[i][2 - i])
 
         board_transpose = list(map(list, zip(*self.board)))
         combinations = [*self.board, *board_transpose, left_diagonal, right_diagonal]

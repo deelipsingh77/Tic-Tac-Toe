@@ -2,10 +2,11 @@ from board import TicTacToeBoard
 from cpu_logic import cpu_move
 
 player = {
-    'human': None,
-    'cpu': None,
+    'human': '',
+    'cpu': '',
     'turn': True
 }
+
 
 def choose_piece():
     while not player['human']:
@@ -14,13 +15,14 @@ def choose_piece():
             if piece == '-1':
                 print("Thanks for Playing!!😁")
                 return False
-                
+
             print("Invalid Choice!!")
         else:
             player['human'] = piece
-    
+
     player['cpu'] = 'O' if player['human'] == 'X' else 'X'
     return True
+
 
 def player_input(board):
     while True:
@@ -51,10 +53,11 @@ def player_input(board):
             print("Invalid Input!! Please Re-Enter!!!")
             continue
 
+
 def play():
     running = choose_piece()
     board = TicTacToeBoard()
-    
+
     if running:
         board.indexed_board()
 
