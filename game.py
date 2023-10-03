@@ -1,10 +1,11 @@
+import random
 from board import TicTacToeBoard
 from cpu_logic import cpu_move
 
 player = {
     'human': '',
     'cpu': '',
-    'turn': True
+    'turn': random.choice((True, False))
 }
 
 
@@ -63,9 +64,11 @@ def play():
 
     while running:
         if player['turn']:
+            print("---Your Move---")
             running = player_input(board)
             player['turn'] = not player['turn']
         else:
+            print("---Opponent's Move---")
             move = cpu_move(board, player)
             print("Opponent Played: ", move)
             player['turn'] = not player['turn']
@@ -89,7 +92,7 @@ def play():
             board.print_board()
 
     player.update({
-        'human': None,
-        'cpu': None,
-        'turn': True
+        'human': '',
+        'cpu': '',
+        'turn': random.choice((True, False))
     })
